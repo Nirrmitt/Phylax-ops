@@ -2,8 +2,7 @@
 
 **Links**
 - GitHub: https://github.com/Nirrmitt/Phylax-ops
-- Live UI (Render): https://phylax-ops-ui.onrender.com/
-- Live API health: https://phylax-ops-api.onrender.com/health
+- Live demo (in-browser): https://nirrmitt.github.io/NRT-Terminal/demos/phylax.html
 
 ## Summary
 Phylax-ops is a portfolio project where I designed and built a **safety-first operations assistant** that answers store-policy questions, queries synthetic order data, and can prepare a support ticket **only after explicit confirmation**.
@@ -83,3 +82,27 @@ This design prevents “accidental” actions and makes action-enablement a deli
 - Implemented guarded SQL access (single-statement read-only `SELECT`, validation, row caps, timeouts) for safe database querying.
 - Designed action controls for ticket creation using explicit confirmation + runtime opt-in flags to prevent unintended side effects.
 - Created an evaluation suite with labeled question categories (RAG-only, SQL-only, multi-step, action, adversarial) and a repeatable dev workflow (lint/test/eval).
+
+## Portfolio website copy (ready to paste)
+
+### Project card
+**Phylax-ops — Safety-first Retail Operations Assistant**
+
+I built an operations-focused AI assistant that answers retail-policy questions, queries synthetic order data, and prepares support tickets only after explicit confirmation.
+
+**Stack:** LangGraph, FastAPI, Streamlit, ChromaDB, SentenceTransformers, SQLAlchemy, PostgreSQL, Docker, pytest, Ruff
+
+**Links**
+- GitHub: https://github.com/Nirrmitt/Phylax-ops
+- Live Demo: https://nirrmitt.github.io/NRT-Terminal/demos/phylax.html
+
+### Key outcomes (website bullets)
+- Engineered evidence-backed responses that expose planning steps, tool outputs, and citations instead of opaque chatbot-style answers.
+- Added strict SQL safety guardrails (single read-only `SELECT`, statement validation, row limits, and timeouts) to reduce unsafe query risk.
+- Implemented action gating for ticket creation with double confirmation and runtime opt-in flags to prevent accidental side effects.
+- Shipped a repeatable quality workflow with linting, tests, and a 50-question evaluation suite across RAG, SQL, multi-step, action, and adversarial prompts.
+
+### One-line teaser options
+- Built a safety-first AI ops copilot for retail support, with transparent evidence and guarded actions.
+- Designed an auditable retail assistant that combines policy retrieval, safe SQL querying, and confirmation-gated ticket workflows.
+- Developed a production-style agent demo focused on reliability: citations, SQL guardrails, and explicit action controls.
