@@ -243,9 +243,10 @@ Both services use Render's **Free** plan. Free services spin down after inactivi
 Create an empty repository, then from this project folder run the following commands (replace the username):
 
 ```sh
-gh repo create YOUR_GITHUB_USERNAME/Phylax-ops --public
-git remote add origin https://github.com/YOUR_GITHUB_USERNAME/Phylax-ops.git
+gh repo create Nirrmitt/Phylax-ops --public
+git remote add origin https://github.com/Nirrmitt/Phylax-ops.git
 git branch -M main
 git push -u origin main
 ```
+
 
