@@ -1,5 +1,4 @@
-# ops-copilot
-
+# Phylax-ops
 **A safety-first retail operations assistant built with LangGraph.** It can look up store policy, answer questions from synthetic order data, and prepare a support ticket only after explicit confirmation. Every response shows the plan, tool results, and evidence used.
 
 This is a portfolio project for demonstrating practical agent engineering: tool selection, retrieval, guarded SQL, action controls, human handoff, automated evaluation, and a repeatable local development setup. It uses synthetic data and is not intended for production customer information.
@@ -19,7 +18,7 @@ This is a portfolio project for demonstrating practical agent engineering: tool 
 
 Store operations questions often cross boundaries. A manager may need a return rule from a policy document, an order status from a database, or a handoff to a human. A general-purpose chatbot can answer without evidence or take an action too early.
 
-`ops-copilot` demonstrates a constrained alternative. It chooses from three tools, validates their inputs, keeps SQL read-only and row-limited, requires two gates before ticket creation, cites the evidence it used, and hands off when it cannot support an answer.
+`Phylax-ops` demonstrates a constrained alternative. It chooses from three tools, validates their inputs, keeps SQL read-only and row-limited, requires two gates before ticket creation, cites the evidence it used, and hands off when it cannot support an answer.
 
 ## How a request moves through the agent
 
@@ -235,7 +234,7 @@ Makefile              Common development commands
 
 The root `render.yaml` defines separate free Docker web services for the API and Streamlit UI. The API seeds its synthetic SQLite database at startup, and the policy embedding model and index are prepared in the image. The UI connects to the API using Render's service-host reference. The deployment uses the mock LLM and keeps ticket actions disabled; no provider key is required.
 
-**Live demo:** [Open the Streamlit UI](https://ops-copilot-ui-wwyq.onrender.com/). Smoke-tested with “What is the return window?”; the page displayed the `rag_search` plan, tool output, and `returns.md` evidence. The [API health check](https://ops-copilot-api-x840.onrender.com/health) returns `{"status":"ok"}`.
+**Live demo:** [Open the Streamlit UI](https://phylax-ops-ui.onrender.com/). Smoke-tested with “What is the return window?”; the page displayed the `rag_search` plan, tool output, and `returns.md` evidence. The [API health check](https://phylax-ops-api.onrender.com/health) returns `{"status":"ok"}`.
 
 Both services use Render's **Free** plan. Free services spin down after inactivity, so a request may take 50 seconds or more while the instance wakes; local filesystems are ephemeral, and the API is public because Free services do not support private networking. This setup is for a portfolio demo with synthetic data, not production use; SQLite contents are reseeded after restarts.
 
@@ -244,8 +243,9 @@ Both services use Render's **Free** plan. Free services spin down after inactivi
 Create an empty repository, then from this project folder run the following commands (replace the username):
 
 ```sh
-gh repo create YOUR_GITHUB_USERNAME/ops-copilot --public
-git remote add origin https://github.com/YOUR_GITHUB_USERNAME/ops-copilot.git
+gh repo create YOUR_GITHUB_USERNAME/Phylax-ops --public
+git remote add origin https://github.com/YOUR_GITHUB_USERNAME/Phylax-ops.git
 git branch -M main
 git push -u origin main
 ```
+

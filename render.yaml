@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: ops-copilot-api
+    name: phylax-ops-api
     runtime: docker
     plan: free
     dockerfilePath: ./Dockerfile
@@ -17,7 +17,7 @@ services:
       - key: ALLOW_TICKET_ACTIONS
         value: "false"
   - type: web
-    name: ops-copilot-ui
+    name: phylax-ops-ui
     runtime: docker
     plan: free
     dockerfilePath: ./Dockerfile
@@ -28,5 +28,6 @@ services:
       - key: API_BASE_URL
         fromService:
           type: web
-          name: ops-copilot-api
+          name: phylax-ops-api
           property: host
+

@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from app.graph import agent
 from app.schemas import AskRequest
 
-app = FastAPI(title="ops-copilot")
+app = FastAPI(title="Phylax-ops")
 
 
 class Health(BaseModel):
@@ -39,3 +39,4 @@ async def mock_ticket(payload: dict[str, str]) -> dict[str, object]:
     if not summary:
         raise HTTPException(status_code=422, detail="Ticket summary is required")
     return {"created": True, "ticket_id": "MOCK-001", "summary": summary}
+

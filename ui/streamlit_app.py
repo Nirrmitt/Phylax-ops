@@ -5,7 +5,7 @@ import httpx
 import streamlit as st
 
 st.set_page_config(
-    page_title="Ops Copilot | Retail Operations",
+    page_title="Phylax-ops | Retail Operations",
     page_icon="🛍️",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -259,3 +259,4 @@ if result:
         for index, call in enumerate(result["tool_calls"], start=1):
             st.markdown(f"**Tool call {index} · `{call['tool']}`**")
             st.json(call)
+

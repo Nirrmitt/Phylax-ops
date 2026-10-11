@@ -3,7 +3,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "ops-copilot"
+name = "phylax-ops"
 version = "0.1.0"
 description = "A safe, beginner-readable retail operations assistant"
 requires-python = ">=3.11"
@@ -27,3 +27,4 @@ target-version = "py311"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+
