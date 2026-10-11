@@ -1,16 +1,46 @@
 # Phylax-ops
-**A safety-first retail operations assistant built with LangGraph.** It answers store-policy questions, looks up synthetic order data, and prepares a support ticket only after explicit confirmation.
 
-**What this project demonstrates**
-- Evidence-backed answers: every response shows the plan, tool output, and sources.
-- Retrieval over policy docs (ChromaDB + SentenceTransformers).
-- Guarded SQL access (read-only `SELECT`, row cap, timeouts).
-- Action controls (double confirmation + explicit opt-in flag).
-- A repeatable dev workflow (tests, lint, 50-question eval set, CI).
+<p align="center">
+  <strong>A safety-first AI operations copilot for retail support.</strong><br>
+  Ground answers in policy and order data, expose the evidence, and keep actions behind explicit controls.
+</p>
 
-**Author:** Nirrmitt (solo project). Built end-to-end: agent design, safety controls, data model, API/UI, evaluation, and deployment configs. Git history may include a couple of docs-only commits authored by my local tooling identity.
+<p align="center">
+  <a href="https://github.com/Nirrmitt/Phylax-ops/actions/workflows/ci.yml"><img src="https://github.com/Nirrmitt/Phylax-ops/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://github.com/Nirrmitt/Phylax-ops"><img src="https://img.shields.io/badge/Source-GitHub-24292F?style=flat&logo=github&logoColor=white" alt="Source on GitHub"></a>
+  <a href="https://phylax-ops-ui.onrender.com/"><img src="https://img.shields.io/badge/Live_Demo-Streamlit-FF4B4B?style=flat&logo=streamlit&logoColor=white" alt="Live demo"></a>
+  <img src="https://img.shields.io/badge/Python-3.11-3776AB?style=flat&logo=python&logoColor=white" alt="Python 3.11">
+  <img src="https://img.shields.io/badge/License-MIT-2ea44f?style=flat" alt="MIT license">
+</p>
 
-All data is synthetic and this repo is intended for portfolio/demo use.
+**Phylax-ops** is a portfolio project that brings three common retail-support workflows into one auditable assistant: policy lookup, order-data queries, and a confirmation-gated support-ticket action. Rather than present an opaque chatbot answer, it exposes the proposed plan, tool outputs, and sources, and hands off when the available evidence is insufficient.
+
+**Project:** [Source code](https://github.com/Nirrmitt/Phylax-ops) · [Live Streamlit demo](https://phylax-ops-ui.onrender.com/) · [API health](https://phylax-ops-api.onrender.com/health) · [OpenAPI docs](https://phylax-ops-api.onrender.com/docs)
+
+> **Demo scope:** all policies and order records are synthetic. Ticket creation uses a mock endpoint. This project demonstrates safety-oriented engineering patterns; it is not a production support system.
+
+## Contents
+
+- [What it demonstrates](#what-it-demonstrates)
+- [Architecture](#how-a-request-moves-through-the-agent)
+- [Demo](#streamlit-demo)
+- [Run locally](#try-it-locally)
+- [API](#example-api-request)
+- [Evaluation](#evaluation)
+- [Safety and limitations](#safety-and-engineering-choices)
+- [Configuration](#configuration)
+- [Project layout](#project-layout)
+
+## What it demonstrates
+
+- **Evidence-first agent UX:** each turn makes its plan, tool results, citations, confidence, and handoff status inspectable.
+- **Retrieval-augmented policy answers:** ChromaDB and SentenceTransformers retrieve relevant passages from seven policy documents, with document and chunk identifiers.
+- **Constrained database access:** SQL is validated as a single read-only `SELECT`, capped at 100 rows, and executed with a short timeout. Docker Compose configures PostgreSQL with a read-only application role.
+- **Explicitly gated actions:** ticket requests require request-level confirmation and a separate runtime opt-in; the action is disabled by default.
+- **Bounded orchestration:** LangGraph coordinates validated tool calls, caps a turn at six tool steps, retries weak evidence once, and surfaces tool failures for review.
+- **Evaluation as part of the build:** a 50-question labeled dataset covers retrieval, SQL, multi-step requests, actions, and adversarial/out-of-scope prompts, with 12 holdout cases.
+- **Reproducible engineering workflow:** FastAPI, Streamlit, pytest, Ruff, Docker Compose, and GitHub Actions support local development and CI.
+
 ## At a glance
 
 | | |
@@ -52,7 +82,7 @@ The synthesizer formats tool outputs instead of generating unsupported factual c
 
 ### Streamlit demo
 
-These local mock-mode screenshots show the planned tool call, returned tool evidence, and cited sources.
+These local mock-mode screenshots show the planned tool call, returned tool evidence, and cited sources. The [hosted demo](https://phylax-ops-ui.onrender.com/) runs in mock mode against synthetic data.
 
 ![Streamlit plan and tool call](docs/streamlit-demo-plan.png)
 
@@ -106,6 +136,21 @@ curl -X POST http://localhost:8000/ask \
 
 `POST /ask` returns the answer, structured plan, tool results, sources, confidence, and `handed_off`. `GET /health` reports service health. Invalid requests receive `422`; assistant or data-tool failures receive `503`.
 
+The response includes the executed plan and auditable tool results alongside the user-facing answer:
+
+```json
+{
+  "answer": "…",
+  "plan": {"calls": [{"tool": "rag_search", "arguments": {"query": "…"}}], "refusal": null},
+  "tool_calls": [{"tool": "rag_search", "arguments": {"query": "…"}, "output": ["…"], "ok": true}],
+  "sources": ["returns.md#chunk-…"],
+  "confidence": 0.75,
+  "handed_off": false
+}
+```
+
+The abbreviated values above illustrate the response shape; tool output and source identifiers depend on the request.
+
 ## Evaluation
 
 The JSONL dataset has 50 labeled questions: 15 RAG-only, 15 SQL-only, 10 multi-step, 5 action, and 5 out-of-scope or adversarial examples. Twelve are marked `holdout`. Use the development split to make prompt changes; run the complete set after choices are fixed.
@@ -131,7 +176,7 @@ The runner evaluates all development cases before the 12 holdout cases. Its JSON
 
 ### Recorded mock run
 
-These figures come from the run saved in `eval/results/mock.json` on 2026-10-09. They describe the deterministic mock planner and local synthetic dataset, not a live model or production workload.
+These figures come from the run saved in `eval/results/mock.json` on 2026-10-09. They describe the deterministic mock planner and local synthetic dataset, not a live model or production workload. The mock planner uses fixed intent rules and example SQL; its results measure the application path and evaluation harness, not general language-model reasoning.
 
 | Metric | Mock result |
 |---|---:|
@@ -143,7 +188,7 @@ These figures come from the run saved in `eval/results/mock.json` on 2026-10-09.
 | End-to-end success | 0.96 |
 | Average graph steps | 3.90 |
 | p50 / p95 latency | 19.99 ms / 23.62 ms |
-| Cost per query | $0.00 |
+| External model cost per query | $0.00 (mock; excludes local compute) |
 
 | Baseline | Tool-routing accuracy | Other result |
 |---|---:|---:|
@@ -155,7 +200,7 @@ The baselines are intentionally lightweight deterministic comparisons, not separ
 
 ### Recorded real OpenRouter run
 
-These are the results from `eval/results/real.json`, recorded on 2026-10-09 with `openai/gpt-4o-mini` through OpenRouter. The 38 development cases ran first and the 12 holdouts ran last; no prompt or routing changes were made after seeing the holdout results.
+These are the results from `eval/results/real.json`, recorded on 2026-10-09 with `openai/gpt-4o-mini` through OpenRouter. The 38 development cases ran first and the 12 holdouts ran last; no prompt or routing changes were made after seeing the holdout results. This run exposed significant model-planning and SQL-schema gaps; it is reported to show the measured behavior, not as a production-quality score.
 
 | Metric | Real result |
 |---|---:|
@@ -175,7 +220,7 @@ These are the results from `eval/results/real.json`, recorded on 2026-10-09 with
 | Development | 38 | 0.3684 | 0.3684 | 0.1053 |
 | Holdout (final) | 12 | 0.4167 | 0.4167 | 0.0833 |
 
-The live-model run performed substantially worse than the deterministic mock. The failure log describes the routing refusals, SQL schema mismatches, and the one labeled source missed by retrieval. RAG recall is measured separately from whether the planner actually invoked the retrieval tool. Faithfulness is an LLM-judge score, not a human-validated factuality rate.
+The live-model run performed substantially worse than the deterministic mock. The [failure log](eval/FAILURES.md) details routing refusals, SQL schema mismatches, and the one labeled source missed by retrieval. RAG recall is measured separately from whether the planner actually invoked the retrieval tool. Faithfulness is an LLM-judge score, not a human-validated factuality rate. The mock lexical faithfulness proxy and live-model judge score use different methods and should not be compared as if they were the same metric.
 
 ## Safety and engineering choices
 
@@ -187,6 +232,16 @@ The live-model run performed substantially worse than the deterministic mock. Th
 - **Synthetic data:** the policies and 250 generated orders are invented for this demo. No company or customer records are included.
 
 The verifier checks tool success and evidence presence; it is not a formal proof of factual correctness. The mock planner maps common retail phrases to fixed example SQL rather than doing general-purpose text-to-SQL. The ticket service is a mock endpoint. These are deliberate portfolio-sized trade-offs, not production-ready controls.
+
+## Known limitations and next steps
+
+- The recorded OpenRouter run achieved **0/25 SQL result-set accuracy** and **10% end-to-end success**. The detailed failure log shows that the planner needs stronger schema grounding and more reliable tool selection before real-model use.
+- Policy retrieval achieved **24/25 Recall@4** in that run, but retrieval recall alone does not prove that the answer used the right passage or that its claims are correct.
+- Verification confirms tool success and evidence presence; it does not establish semantic entailment or replace human review.
+- The mock planner is intentionally deterministic and narrow. The support-ticket integration is a local mock, not a connection to a live ticketing platform.
+- The public demo uses free Render services, SQLite, and synthetic data. It can sleep during inactivity, has ephemeral local storage, and is not suitable for sensitive or production workloads.
+
+Potential improvements include injecting the actual database schema into model planning, expanding the holdout set, measuring citation support with human-reviewed examples, and integrating an approved ticket system behind the existing action gates.
 
 ## Configuration
 
@@ -229,15 +284,6 @@ Makefile              Common development commands
 3. Run `python -m eval.run_eval` and inspect the generated result files.
 4. Update the README results only with output from that real run, and add any observed failures to `eval/FAILURES.md`.
 
-## Deploy to Azure Container Apps
-
-1. Create an Azure Container Apps environment and Azure Container Registry.
-2. Build and push the reviewed image to the registry.
-3. Provision managed PostgreSQL and apply the schema using a dedicated read-only application role.
-4. Create the Container App with API ingress and configure its health probe for `/health`.
-5. Store provider credentials and database connection strings in Azure Key Vault, then reference them as Container App secrets.
-6. Configure network access, logs, monitoring, and an approved ticket webhook before enabling actions.
-
 ## Render demo deployment
 
 The root `render.yaml` defines separate free Docker web services for the API and Streamlit UI. The API seeds its synthetic SQLite database at startup, and the policy embedding model and index are prepared in the image. The UI connects to the API using Render's service-host reference. The deployment uses the mock LLM and keeps ticket actions disabled; no provider key is required.
@@ -246,16 +292,21 @@ The root `render.yaml` defines separate free Docker web services for the API and
 
 Both services use Render's **Free** plan. Free services spin down after inactivity, so a request may take 50 seconds or more while the instance wakes; local filesystems are ephemeral, and the API is public because Free services do not support private networking. This setup is for a portfolio demo with synthetic data, not production use; SQLite contents are reseeded after restarts.
 
-## GitHub
+## Development
 
-Create an empty repository, then from this project folder run the following commands (replace the username):
+Install the development dependencies with `python -m pip install -e ".[dev]"`, then run the checks from the repository root:
 
 ```sh
-gh repo create Nirrmitt/Phylax-ops --public
-git remote add origin https://github.com/Nirrmitt/Phylax-ops.git
-git branch -M main
-git push -u origin main
+ruff check .
+pytest -q
+python -m app.seed
+python -m eval.run_eval
 ```
 
+Continuous integration runs Ruff, seeds the local database, and runs pytest on Python 3.11. The evaluation workflow runs the mock evaluation and saves its results as a workflow artifact.
 
+When testing a real provider, use your own credential in an ignored `.env` file, leave ticket actions disabled unless explicitly testing the gate, and review both development and holdout results. The evaluation files under [`eval/results/`](eval/results/) are recorded run artifacts, not guarantees about future models or deployments.
 
+## License
+
+This project is released under the [MIT License](LICENSE).
