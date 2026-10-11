@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/License-MIT-2ea44f?style=flat" alt="MIT license">
 </p>
 
-**Phylax-ops** is a portfolio project that brings three common retail-support workflows into one auditable assistant: policy lookup, order-data queries, and a confirmation-gated support-ticket action. Rather than present an opaque chatbot answer, it exposes the proposed plan, tool outputs, and sources, and hands off when the available evidence is insufficient.
+**Phylax-ops** is a project that brings three common retail-support workflows into one auditable assistant: policy lookup, order-data queries, and a confirmation-gated support-ticket action. Rather than present an opaque chatbot answer, it exposes the proposed plan, tool outputs, and sources, and hands off when the available evidence is insufficient.
 
 **Project:** [Source code](https://github.com/Nirrmitt/Phylax-ops) · [Live Streamlit demo](https://phylax-ops-ui.onrender.com/) · [API health](https://phylax-ops-api.onrender.com/health) · [OpenAPI docs](https://phylax-ops-api.onrender.com/docs)
 
