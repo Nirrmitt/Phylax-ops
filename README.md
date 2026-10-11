@@ -1,12 +1,16 @@
 # Phylax-ops
-**A safety-first retail operations assistant built with LangGraph.** It can look up store policy, answer questions from synthetic order data, and prepare a support ticket only after explicit confirmation. Every response shows the plan, tool results, and evidence used.
+**A safety-first retail operations assistant built with LangGraph.** It answers store-policy questions, looks up synthetic order data, and prepares a support ticket only after explicit confirmation.
 
+**What this project demonstrates**
+- Evidence-backed answers: every response shows the plan, tool output, and sources.
+- Retrieval over policy docs (ChromaDB + SentenceTransformers).
+- Guarded SQL access (read-only `SELECT`, row cap, timeouts).
+- Action controls (double confirmation + explicit opt-in flag).
+- A repeatable dev workflow (tests, lint, 50-question eval set, CI).
 
-**Author:** Nirrmitt (solo project)  
-This repository is built and maintained by Nirrmitt. Some early documentation commits may show an automated tooling identity from my local environment; the design, implementation, and decisions are mine.
+**Author:** Nirrmitt (solo project). Built end-to-end: agent design, safety controls, data model, API/UI, evaluation, and deployment configs. Git history may include a couple of docs-only commits authored by my local tooling identity.
 
-This is a portfolio project for demonstrating practical agent engineering: tool selection, retrieval, guarded SQL, action controls, human handoff, automated evaluation, and a repeatable local development setup. It uses synthetic data and is not intended for production customer information.
-
+All data is synthetic and this repo is intended for portfolio/demo use.
 ## At a glance
 
 | | |
