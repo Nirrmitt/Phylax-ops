@@ -1,6 +1,10 @@
 # Phylax-ops
 **A safety-first retail operations assistant built with LangGraph.** It can look up store policy, answer questions from synthetic order data, and prepare a support ticket only after explicit confirmation. Every response shows the plan, tool results, and evidence used.
 
+
+**Author:** Nirrmitt (solo project)  
+This repository is built and maintained by Nirrmitt. Some early documentation commits may show an automated tooling identity from my local environment; the design, implementation, and decisions are mine.
+
 This is a portfolio project for demonstrating practical agent engineering: tool selection, retrieval, guarded SQL, action controls, human handoff, automated evaluation, and a repeatable local development setup. It uses synthetic data and is not intended for production customer information.
 
 ## At a glance
@@ -248,5 +252,6 @@ git remote add origin https://github.com/Nirrmitt/Phylax-ops.git
 git branch -M main
 git push -u origin main
 ```
+
 
 
