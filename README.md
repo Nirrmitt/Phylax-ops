@@ -8,14 +8,14 @@
 <p align="center">
   <a href="https://github.com/Nirrmitt/Phylax-ops/actions/workflows/ci.yml"><img src="https://github.com/Nirrmitt/Phylax-ops/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://github.com/Nirrmitt/Phylax-ops"><img src="https://img.shields.io/badge/Source-GitHub-24292F?style=flat&logo=github&logoColor=white" alt="Source on GitHub"></a>
-  <a href="https://phylax-ops-ui.onrender.com/"><img src="https://img.shields.io/badge/Live_Demo-Streamlit-FF4B4B?style=flat&logo=streamlit&logoColor=white" alt="Live demo"></a>
+  <a href="https://nirrmitt.github.io/NRT-Terminal/demos/phylax.html"><img src="https://img.shields.io/badge/Live_Demo-In_browser-38bdf8?style=flat" alt="Live demo"></a>
   <img src="https://img.shields.io/badge/Python-3.11-3776AB?style=flat&logo=python&logoColor=white" alt="Python 3.11">
   <img src="https://img.shields.io/badge/License-MIT-2ea44f?style=flat" alt="MIT license">
 </p>
 
 **Phylax-ops** is a project that brings three common retail-support workflows into one auditable assistant: policy lookup, order-data queries, and a confirmation-gated support-ticket action. Rather than present an opaque chatbot answer, it exposes the proposed plan, tool outputs, and sources, and hands off when the available evidence is insufficient.
 
-**Project:** [Source code](https://github.com/Nirrmitt/Phylax-ops) · [Live Streamlit demo](https://phylax-ops-ui.onrender.com/) · [API health](https://phylax-ops-api.onrender.com/health) · [OpenAPI docs](https://phylax-ops-api.onrender.com/docs)
+**Project:** [Source code](https://github.com/Nirrmitt/Phylax-ops) · [Live in-browser demo](https://nirrmitt.github.io/NRT-Terminal/demos/phylax.html)
 
 > **Demo scope:** all policies and order records are synthetic. Ticket creation uses a mock endpoint. This project demonstrates safety-oriented engineering patterns; it is not a production support system.
 
@@ -82,7 +82,7 @@ The synthesizer formats tool outputs instead of generating unsupported factual c
 
 ### Streamlit demo
 
-These local mock-mode screenshots show the planned tool call, returned tool evidence, and cited sources. The [hosted demo](https://phylax-ops-ui.onrender.com/) runs in mock mode against synthetic data.
+These local mock-mode screenshots show the planned tool call, returned tool evidence, and cited sources. The [in-browser demo](https://nirrmitt.github.io/NRT-Terminal/demos/phylax.html) is a JavaScript port of the mock-mode logic running on synthetic data.
 
 ![Streamlit plan and tool call](docs/streamlit-demo-plan.png)
 
@@ -288,7 +288,7 @@ Makefile              Common development commands
 
 The root `render.yaml` defines separate free Docker web services for the API and Streamlit UI. The API seeds its synthetic SQLite database at startup, and the policy embedding model and index are prepared in the image. The UI connects to the API using Render's service-host reference. The deployment uses the mock LLM and keeps ticket actions disabled; no provider key is required.
 
-**Live demo:** [Open the Streamlit UI](https://phylax-ops-ui.onrender.com/). Smoke-tested with “What is the return window?”; the page displayed the `rag_search` plan, tool output, and `returns.md` evidence. The [API health check](https://phylax-ops-api.onrender.com/health) returns `{"status":"ok"}`.
+**Live demo:** [Try the in-browser demo](https://nirrmitt.github.io/NRT-Terminal/demos/phylax.html), a JavaScript port of the mock-mode router, SQL guard, and confirm-gated ticket flow running on synthetic data. The Render deployment above is defined in `render.yaml` but is not currently running.
 
 Both services use Render's **Free** plan. Free services spin down after inactivity, so a request may take 50 seconds or more while the instance wakes; local filesystems are ephemeral, and the API is public because Free services do not support private networking. This setup is for a portfolio demo with synthetic data, not production use; SQLite contents are reseeded after restarts.
 
